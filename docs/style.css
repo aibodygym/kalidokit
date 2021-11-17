@@ -71,6 +71,12 @@ nav img {
     margin-left: 22px;
 }
 
+.exercise {
+    position: absolute;
+    left: 765px;
+    top: 15px;
+}
+
 @media only screen and (max-width: 600px) {
     video {
         max-width: 160px;
