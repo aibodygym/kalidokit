@@ -35,14 +35,14 @@ a:link:hover {
 .preview {
     display: flex;
     position: absolute;
-    bottom: 16px;
-    right: 16px;
+    top: 16px;
+    left: 16px;
     transform: scale(-1, 1);
     overflow: hidden;
     border-radius: 8px;
 }
 video {
-    max-width: 300px;
+    max-width: 720px;
     height: auto;
 }
 body {

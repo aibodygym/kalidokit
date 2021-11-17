@@ -50,23 +50,23 @@ animate();
 const loader = new THREE.GLTFLoader();
 loader.crossOrigin = "anonymous";
 // Import model from URL, add your own model here
-loader.load(
-    "https://cdn.glitch.com/29e07830-2317-4b15-a044-135e73c7f840%2FAshtra.vrm?v=1630342336981",
-
-    (gltf) => {
-        THREE.VRMUtils.removeUnnecessaryJoints(gltf.scene);
-
-        THREE.VRM.from(gltf).then((vrm) => {
-            scene.add(vrm.scene);
-            currentVrm = vrm;
-            currentVrm.scene.rotation.y = Math.PI; // Rotate model 180deg to face camera
-        });
-    },
-
-    (progress) => console.log("Loading model...", 100.0 * (progress.loaded / progress.total), "%"),
-
-    (error) => console.error(error)
-);
+// loader.load(
+//     "https://cdn.glitch.com/29e07830-2317-4b15-a044-135e73c7f840%2FAshtra.vrm?v=1630342336981",
+//
+//     (gltf) => {
+//         THREE.VRMUtils.removeUnnecessaryJoints(gltf.scene);
+//
+//         THREE.VRM.from(gltf).then((vrm) => {
+//             scene.add(vrm.scene);
+//             currentVrm = vrm;
+//             currentVrm.scene.rotation.y = Math.PI; // Rotate model 180deg to face camera
+//         });
+//     },
+//
+//     (progress) => console.log("Loading model...", 100.0 * (progress.loaded / progress.total), "%"),
+//
+//     (error) => console.error(error)
+// );
 
 // Animate Rotation Helper function
 const rigRotation = (name, rotation = { x: 0, y: 0, z: 0 }, dampener = 1, lerpAmount = 0.3) => {
@@ -97,41 +97,41 @@ const rigPosition = (name, position = { x: 0, y: 0, z: 0 }, dampener = 1, lerpAm
 };
 
 let oldLookTarget = new THREE.Euler();
-const rigFace = (riggedFace) => {
-    if (!currentVrm) {
-        return;
-    }
-    rigRotation("Neck", riggedFace.head, 0.7);
-
-    // Blendshapes and Preset Name Schema
-    const Blendshape = currentVrm.blendShapeProxy;
-    const PresetName = THREE.VRMSchema.BlendShapePresetName;
-
-    // Simple example without winking. Interpolate based on old blendshape, then stabilize blink with `Kalidokit` helper function.
-    // for VRM, 1 is closed, 0 is open.
-    riggedFace.eye.l = lerp(clamp(1 - riggedFace.eye.l, 0, 1), Blendshape.getValue(PresetName.Blink), 0.5);
-    riggedFace.eye.r = lerp(clamp(1 - riggedFace.eye.r, 0, 1), Blendshape.getValue(PresetName.Blink), 0.5);
-    riggedFace.eye = Kalidokit.Face.stabilizeBlink(riggedFace.eye, riggedFace.head.y);
-    Blendshape.setValue(PresetName.Blink, riggedFace.eye.l);
-
-    // Interpolate and set mouth blendshapes
-    Blendshape.setValue(PresetName.I, lerp(riggedFace.mouth.shape.I, Blendshape.getValue(PresetName.I), 0.5));
-    Blendshape.setValue(PresetName.A, lerp(riggedFace.mouth.shape.A, Blendshape.getValue(PresetName.A), 0.5));
-    Blendshape.setValue(PresetName.E, lerp(riggedFace.mouth.shape.E, Blendshape.getValue(PresetName.E), 0.5));
-    Blendshape.setValue(PresetName.O, lerp(riggedFace.mouth.shape.O, Blendshape.getValue(PresetName.O), 0.5));
-    Blendshape.setValue(PresetName.U, lerp(riggedFace.mouth.shape.U, Blendshape.getValue(PresetName.U), 0.5));
-
-    //PUPILS
-    //interpolate pupil and keep a copy of the value
-    let lookTarget = new THREE.Euler(
-        lerp(oldLookTarget.x, riggedFace.pupil.y, 0.4),
-        lerp(oldLookTarget.y, riggedFace.pupil.x, 0.4),
-        0,
-        "XYZ"
-    );
-    oldLookTarget.copy(lookTarget);
-    currentVrm.lookAt.applyer.lookAt(lookTarget);
-};
+// const rigFace = (riggedFace) => {
+//     if (!currentVrm) {
+//         return;
+//     }
+//     rigRotation("Neck", riggedFace.head, 0.7);
+//
+//     // Blendshapes and Preset Name Schema
+//     const Blendshape = currentVrm.blendShapeProxy;
+//     const PresetName = THREE.VRMSchema.BlendShapePresetName;
+//
+//     // Simple example without winking. Interpolate based on old blendshape, then stabilize blink with `Kalidokit` helper function.
+//     // for VRM, 1 is closed, 0 is open.
+//     riggedFace.eye.l = lerp(clamp(1 - riggedFace.eye.l, 0, 1), Blendshape.getValue(PresetName.Blink), 0.5);
+//     riggedFace.eye.r = lerp(clamp(1 - riggedFace.eye.r, 0, 1), Blendshape.getValue(PresetName.Blink), 0.5);
+//     riggedFace.eye = Kalidokit.Face.stabilizeBlink(riggedFace.eye, riggedFace.head.y);
+//     Blendshape.setValue(PresetName.Blink, riggedFace.eye.l);
+//
+//     // Interpolate and set mouth blendshapes
+//     Blendshape.setValue(PresetName.I, lerp(riggedFace.mouth.shape.I, Blendshape.getValue(PresetName.I), 0.5));
+//     Blendshape.setValue(PresetName.A, lerp(riggedFace.mouth.shape.A, Blendshape.getValue(PresetName.A), 0.5));
+//     Blendshape.setValue(PresetName.E, lerp(riggedFace.mouth.shape.E, Blendshape.getValue(PresetName.E), 0.5));
+//     Blendshape.setValue(PresetName.O, lerp(riggedFace.mouth.shape.O, Blendshape.getValue(PresetName.O), 0.5));
+//     Blendshape.setValue(PresetName.U, lerp(riggedFace.mouth.shape.U, Blendshape.getValue(PresetName.U), 0.5));
+//
+//     //PUPILS
+//     //interpolate pupil and keep a copy of the value
+//     let lookTarget = new THREE.Euler(
+//         lerp(oldLookTarget.x, riggedFace.pupil.y, 0.4),
+//         lerp(oldLookTarget.y, riggedFace.pupil.x, 0.4),
+//         0,
+//         "XYZ"
+//     );
+//     oldLookTarget.copy(lookTarget);
+//     currentVrm.lookAt.applyer.lookAt(lookTarget);
+// };
 
 /* VRM Character Animator */
 const animateVRM = (vrm, results) => {
@@ -149,15 +149,6 @@ const animateVRM = (vrm, results) => {
     // Be careful, hand landmarks may be reversed
     const leftHandLandmarks = results.rightHandLandmarks;
     const rightHandLandmarks = results.leftHandLandmarks;
-
-    // Animate Face
-    if (faceLandmarks) {
-        riggedFace = Kalidokit.Face.solve(faceLandmarks, {
-            runtime: "mediapipe",
-            video: videoElement,
-        });
-        rigFace(riggedFace);
-    }
 
     // Animate Pose
     if (pose2DLandmarks && pose3DLandmarks) {
@@ -190,56 +181,6 @@ const animateVRM = (vrm, results) => {
         rigRotation("RightUpperLeg", riggedPose.RightUpperLeg, 1, 0.3);
         rigRotation("RightLowerLeg", riggedPose.RightLowerLeg, 1, 0.3);
     }
-
-    // Animate Hands
-    if (leftHandLandmarks) {
-        riggedLeftHand = Kalidokit.Hand.solve(leftHandLandmarks, "Left");
-        rigRotation("LeftHand", {
-            // Combine pose rotation Z and hand rotation X Y
-            z: riggedPose.LeftHand.z,
-            y: riggedLeftHand.LeftWrist.y,
-            x: riggedLeftHand.LeftWrist.x,
-        });
-        rigRotation("LeftRingProximal", riggedLeftHand.LeftRingProximal);
-        rigRotation("LeftRingIntermediate", riggedLeftHand.LeftRingIntermediate);
-        rigRotation("LeftRingDistal", riggedLeftHand.LeftRingDistal);
-        rigRotation("LeftIndexProximal", riggedLeftHand.LeftIndexProximal);
-        rigRotation("LeftIndexIntermediate", riggedLeftHand.LeftIndexIntermediate);
-        rigRotation("LeftIndexDistal", riggedLeftHand.LeftIndexDistal);
-        rigRotation("LeftMiddleProximal", riggedLeftHand.LeftMiddleProximal);
-        rigRotation("LeftMiddleIntermediate", riggedLeftHand.LeftMiddleIntermediate);
-        rigRotation("LeftMiddleDistal", riggedLeftHand.LeftMiddleDistal);
-        rigRotation("LeftThumbProximal", riggedLeftHand.LeftThumbProximal);
-        rigRotation("LeftThumbIntermediate", riggedLeftHand.LeftThumbIntermediate);
-        rigRotation("LeftThumbDistal", riggedLeftHand.LeftThumbDistal);
-        rigRotation("LeftLittleProximal", riggedLeftHand.LeftLittleProximal);
-        rigRotation("LeftLittleIntermediate", riggedLeftHand.LeftLittleIntermediate);
-        rigRotation("LeftLittleDistal", riggedLeftHand.LeftLittleDistal);
-    }
-    if (rightHandLandmarks) {
-        riggedRightHand = Kalidokit.Hand.solve(rightHandLandmarks, "Right");
-        rigRotation("RightHand", {
-            // Combine Z axis from pose hand and X/Y axis from hand wrist rotation
-            z: riggedPose.RightHand.z,
-            y: riggedRightHand.RightWrist.y,
-            x: riggedRightHand.RightWrist.x,
-        });
-        rigRotation("RightRingProximal", riggedRightHand.RightRingProximal);
-        rigRotation("RightRingIntermediate", riggedRightHand.RightRingIntermediate);
-        rigRotation("RightRingDistal", riggedRightHand.RightRingDistal);
-        rigRotation("RightIndexProximal", riggedRightHand.RightIndexProximal);
-        rigRotation("RightIndexIntermediate", riggedRightHand.RightIndexIntermediate);
-        rigRotation("RightIndexDistal", riggedRightHand.RightIndexDistal);
-        rigRotation("RightMiddleProximal", riggedRightHand.RightMiddleProximal);
-        rigRotation("RightMiddleIntermediate", riggedRightHand.RightMiddleIntermediate);
-        rigRotation("RightMiddleDistal", riggedRightHand.RightMiddleDistal);
-        rigRotation("RightThumbProximal", riggedRightHand.RightThumbProximal);
-        rigRotation("RightThumbIntermediate", riggedRightHand.RightThumbIntermediate);
-        rigRotation("RightThumbDistal", riggedRightHand.RightThumbDistal);
-        rigRotation("RightLittleProximal", riggedRightHand.RightLittleProximal);
-        rigRotation("RightLittleIntermediate", riggedRightHand.RightLittleIntermediate);
-        rigRotation("RightLittleDistal", riggedRightHand.RightLittleDistal);
-    }
 };
 
 /* SETUP MEDIAPIPE HOLISTIC INSTANCE */
@@ -250,7 +191,7 @@ const onResults = (results) => {
     // Draw landmark guides
     drawResults(results);
     // Animate model
-    animateVRM(currentVrm, results);
+    // animateVRM(currentVrm, results);
 };
 
 const holistic = new Holistic({
@@ -262,8 +203,8 @@ const holistic = new Holistic({
 holistic.setOptions({
     modelComplexity: 1,
     smoothLandmarks: true,
-    minDetectionConfidence: 0.7,
-    minTrackingConfidence: 0.7,
+    minDetectionConfidence: 0.3,
+    minTrackingConfidence: 0.5,
     refineFaceLandmarks: true,
 });
 // Pass holistic a callback function
@@ -277,40 +218,40 @@ const drawResults = (results) => {
     canvasCtx.clearRect(0, 0, guideCanvas.width, guideCanvas.height);
     // Use `Mediapipe` drawing functions
     drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
-        color: "#00cff7",
+        color: "#ded190",
         lineWidth: 4,
     });
     drawLandmarks(canvasCtx, results.poseLandmarks, {
-        color: "#ff0364",
+        color: "#05f1d7",
         lineWidth: 2,
     });
-    drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_TESSELATION, {
-        color: "#C0C0C070",
-        lineWidth: 1,
-    });
-    if (results.faceLandmarks && results.faceLandmarks.length === 478) {
-        //draw pupils
-        drawLandmarks(canvasCtx, [results.faceLandmarks[468], results.faceLandmarks[468 + 5]], {
-            color: "#ffe603",
-            lineWidth: 2,
-        });
-    }
-    drawConnectors(canvasCtx, results.leftHandLandmarks, HAND_CONNECTIONS, {
-        color: "#eb1064",
-        lineWidth: 5,
-    });
-    drawLandmarks(canvasCtx, results.leftHandLandmarks, {
-        color: "#00cff7",
-        lineWidth: 2,
-    });
-    drawConnectors(canvasCtx, results.rightHandLandmarks, HAND_CONNECTIONS, {
-        color: "#22c3e3",
-        lineWidth: 5,
-    });
-    drawLandmarks(canvasCtx, results.rightHandLandmarks, {
-        color: "#ff0364",
-        lineWidth: 2,
-    });
+    // drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_TESSELATION, {
+    //     color: "#C0C0C070",
+    //     lineWidth: 1,
+    // });
+    // if (results.faceLandmarks && results.faceLandmarks.length === 478) {
+    //     //draw pupils
+    //     drawLandmarks(canvasCtx, [results.faceLandmarks[468], results.faceLandmarks[468 + 5]], {
+    //         color: "#ffe603",
+    //         lineWidth: 2,
+    //     });
+    // }
+    // drawConnectors(canvasCtx, results.leftHandLandmarks, HAND_CONNECTIONS, {
+    //     color: "#eb1064",
+    //     lineWidth: 5,
+    // });
+    // drawLandmarks(canvasCtx, results.leftHandLandmarks, {
+    //     color: "#00cff7",
+    //     lineWidth: 2,
+    // });
+    // drawConnectors(canvasCtx, results.rightHandLandmarks, HAND_CONNECTIONS, {
+    //     color: "#22c3e3",
+    //     lineWidth: 5,
+    // });
+    // drawLandmarks(canvasCtx, results.rightHandLandmarks, {
+    //     color: "#ff0364",
+    //     lineWidth: 2,
+    // });
 };
 
 // Use `Mediapipe` utils to get camera - lower resolution = higher fps
